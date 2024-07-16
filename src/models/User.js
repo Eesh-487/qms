@@ -1,54 +1,85 @@
-'use strict';
-import {Model} from 'sequelize';
-import crypto from "crypto";
+const { Sequelize, DataTypes } = require('sequelize');
+const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'path_to_your_database.sqlite'
+});
 
-export default (sequelize, DataTypes) => {
-
-  class User extends Model {};
-
-  User.init({
-    username: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {msg: ''} // ADD mensagem de erro
-      }
-    },
-    email: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {msg: ''} // ADD mensagem de erro
-      }
-    },
-    password: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {msg: ''} // ADD mensagem de erro
-      }
-    },
-    password_key: {
-      type: DataTypes.STRING,
-      validate: {
-        notEmpty: {msg: ''} // ADD mensagem de erro
-      }
+// Define the Entity model
+const Entity = sequelize.define('Entity', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  parent_id: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    references: {
+      model: 'Entities', // refers to table name
+      key: 'id'
     }
-  }, {
-    sequelize,
-    modelName: 'User',
-  });
-
-  User.associate = (models) => { /** define association here */ }
-
-  User.beforeCreate(async (user, options)  => {
-    const saltHash = await crypto.randomBytes(32).toString();
-    const hashPassword = await crypto.pbkdf2Sync(user.password, saltHash, 10000, 64, 'sha512').toString('hex');
-    user.password = hashPassword;
-    user.password_key = saltHash;
-  });
-  
-  User.comparePassword = async (password, user) => {
-    const hashVerify = await crypto.pbkdf2Sync(password, user.password_key, 10000, 64, 'sha512').toString('hex');
-    return user.password_hash === hashVerify;
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  description: {
+    type: DataTypes.STRING,
+    allowNull: true
+  },
+  attributes: {
+    type: DataTypes.JSON,
+    allowNull: true
   }
+});
 
-  return User;
-};
+// Define the files model
+const Files = sequelize.define('Files', {
+  id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  folder_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'Entities',  
+      key: 'id'
+    }
+  },
+  file_name: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  file_path: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  upload_date: {
+    type: DataTypes.DATE,
+    allowNull: false
+  },
+  file_size: {
+    type: DataTypes.INTEGER,
+    allowNull: false
+  },
+  file_type: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  access_mode: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+});
+
+// Set up the associations
+Entity.hasMany(Entity, { foreignKey: 'parent_id' });
+Entity.hasMany(Files, { foreignKey: 'folder_id' });
+Files.belongsTo(Entity, { foreignKey: 'folder_id' });
+
+// Sync the models with the database
+sequelize.sync({ force: true }).then(() => {
+  console.log('Database & tables created!');
+});

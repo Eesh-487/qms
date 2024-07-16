@@ -1,10 +1,10 @@
 'use strict';
 
-import fs from 'fs';
-import path from 'path';
-import Sequelize from 'sequelize';
-import configDB from './../database/config/database';
+const fs = require('fs');
+const path = require('path');
+const { Sequelize, DataTypes } = require('sequelize');
 const basename = path.basename(__filename);
+const configDB = require('./../database/config/database');
 const env = process.env.NODE_ENV || 'development';
 const config = configDB[env];
 
