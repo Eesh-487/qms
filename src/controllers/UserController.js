@@ -46,7 +46,7 @@ async function GetByFolderId(req, res) {
 
 async function Put(req, res) {
 	const entityId = req.params.entityId; // Assuming the parameter is named entityId in the route
-	const { name, description, attributes } = req.body;
+	const { name, description, attributes  }= req.body;
 
 	try {
 		let entity = await Entity.findByPk(entityId);
