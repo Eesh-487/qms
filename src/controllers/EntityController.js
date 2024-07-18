@@ -1,5 +1,6 @@
 const { logger } = require("winston");
-const { Entity } = require("../models/User");
+const { Entity } = require("../models/Entity");
+
 
 async function Post(req, res) {
 	try {

@@ -1,6 +1,6 @@
 const { Router } = require("express");
+const { Put, GetByFolderId, Delete, Post } = require("../controllers/EntityController");
 const router = Router();
-const { Post, Delete, GetByFolderId, Put } = require('../controllers/UserController');
 
 router.post('/', Post);
 router.get('/', GetByFolderId);

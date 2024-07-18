@@ -78,14 +78,12 @@ const Files = sequelize.define('Files', {
 // Set up the associations
 Entity.hasMany(Entity, { foreignKey: 'parent_id' });
 Entity.hasMany(Files, { foreignKey: 'folder_id' });
-Files.belongsTo(Entity, { foreignKey: 'folder_id' });
 
 // Sync the models with the database
 sequelize.sync({ force: true }).then(() => {``
   console.log('Database & tables created!');
 });
 module.exports = {
-  Entity,
-  Files
+  Entity
   
 }
