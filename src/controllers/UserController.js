@@ -30,7 +30,7 @@ async function GetByFolderId(req, res) {
 	const folderId = req.params.folderId; // Assuming the parameter is named folderId in the route
 	try {
 		// Logic to retrieve all folders by the specified folder ID
-		const folders = await Entity.findAll({ where: { folder_id: Entity.id } });
+		const folders = await Entity.findAll({ where: { folder_id: folderId} });
 
 		if (folders.length > 0) {
 			res.status(200).json({ folders }); // Sending the retrieved folders as a response
@@ -49,7 +49,7 @@ async function Put(req, res) {
 	const { name, description, attributes } = req.body;
 
 	try {
-		let entity = await Entity.findByPk(id);
+		let entity = await Entity.findByPk(entityId);
 
 		if (!entity) {
 			return res.status(404).json({ message: "Entity not found" });
@@ -69,7 +69,7 @@ async function Put(req, res) {
 async function Delete(req, res) {
 	const entityId = req.params.entityId; // Assuming the parameter is named entityId in the route
 	try {
-		const entity = await Entity.findByPk(id);
+		const entity = await Entity.findByPk(entityId);
 
 		if (!entity) {
 			return res.status(404).json({ message: "Entity not found" });
