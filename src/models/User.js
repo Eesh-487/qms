@@ -1,10 +1,12 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, QueryInterface } = require('sequelize');
 const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'path_to_your_database.sqlite'
+  dialect: 'mysql',
+  host: '127.0.0.1',
+  username: 'root',
+  password: '01000101',
+  database: 'qms'
 });
 
-// Define the Entity model
 const Entity = sequelize.define('Entity', {
   id: {
     type: DataTypes.INTEGER,
@@ -33,7 +35,6 @@ const Entity = sequelize.define('Entity', {
   }
 });
 
-// Define the files model
 const Files = sequelize.define('Files', {
   id: {
     type: DataTypes.INTEGER,
@@ -80,6 +81,11 @@ Entity.hasMany(Files, { foreignKey: 'folder_id' });
 Files.belongsTo(Entity, { foreignKey: 'folder_id' });
 
 // Sync the models with the database
-sequelize.sync({ force: true }).then(() => {
+sequelize.sync({ force: true }).then(() => {``
   console.log('Database & tables created!');
 });
+module.exports = {
+  Entity,
+  Files
+  
+}

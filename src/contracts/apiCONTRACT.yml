@@ -1,0 +1,219 @@
+openapi: 3.0.0
+info:
+  title: Entity Management API
+  version: 1.0.0
+  description: API for managing entities, specifically for creating and managing folders.
+servers:
+  - url: http://localhost:3000/api
+    description: Local server
+paths:
+  /entities:
+    post:
+      summary: Create a new folder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parent_id:
+                  type: integer
+                  nullable: true
+                name:
+                  type: string
+                  example: Folder Name
+                description:
+                  type: string
+                  nullable: true
+                  example: Description of the folder
+                attributes:
+                  type: object
+                  nullable: true
+                  example:
+                    key: value
+              required:
+                - name
+      responses:
+        '201':
+          description: Folder created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  parent_id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  attributes:
+                    type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    get:
+      summary: Retrieve all folders
+      responses:
+        '200':
+          description: A list of folders
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    parent_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    attributes:
+                      type: object
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /entities/{id}:
+    get:
+      summary: Retrieve a specific folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the folder to retrieve
+      responses:
+        '200':
+          description: Folder details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  parent_id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  attributes:
+                    type: object
+        '404':
+          description: Folder not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    put:
+      summary: Update a specific folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the folder to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                parent_id:
+                  type: integer
+                  nullable: true
+                name:
+                  type: string
+                  example: Updated Folder Name
+                description:
+                  type: string
+                  nullable: true
+                  example: Updated description of the folder
+                attributes:
+                  type: object
+                  nullable: true
+                  example:
+                    key: updated value
+      responses:
+        '200':
+          description: Folder updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  parent_id:
+                    type: integer
+                  name:
+                    type: string
+                  description:
+                    type: string
+                  attributes:
+                    type: object
+        '400':
+          description: Invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Folder not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+    delete:
+      summary: Delete a specific folder by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID of the folder to delete
+      responses:
+        '204':
+          description: Folder deleted successfully
+        '404':
+          description: Folder not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
